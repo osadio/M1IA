@@ -20,17 +20,18 @@ def water_pump_command(event, context):
     
     # Predict based on the last 12 hours recorded sensors data (temperature, humidity, month)
     bq_client = bigquery.Client()
+    # NB: dans la requête suivante, remplacer prenom par le prenom que vous indiqué dans BigQuery
     query = """
      SELECT
        *
      FROM
-       ML.PREDICT(MODEL `ml_models.rainfall_prediction`, (
+       ML.PREDICT(MODEL `ml_models_prenom.rainfall_prediction`, (
      SELECT
        CAST(humidity as INT64) AS humidity,
        CAST(temperature as FLOAT64) AS temperature,
        EXTRACT(MONTH FROM timestamp) as month
      FROM
-        `dataset_pipeline_ousmane.temperature_humidite_avg`
+        `dataset_pipeline_prenom.temperature_humidite_avg`
      WHERE timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 12 HOUR) AND CURRENT_TIMESTAMP() 
      ))
      ORDER BY predicted_label DESC
